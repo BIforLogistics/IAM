@@ -40,11 +40,11 @@ def add_user():
     try:
         from libs.models import User_Model
         request_data = request.get_json()
-        User_Model.add_usr(request_data["fname"], request_data["lname"], request_data["ph_no"], request_data["email"], request_data["passed"], request_data["re_passwd"])
+        User_Model.add_usr(request_data["fname"], request_data["lname"], request_data["ph_no"], request_data["email"], request_data["passwd"], request_data["re_passwd"])
         response = Response("User Added", 201, mimetype='application/json')
         logging.info(" * User Added")
         return response
-    except Exception:
+    except:
         resp = jsonify({"message": "Internal server error"})
         resp.status_code = 500   
         return resp
@@ -55,7 +55,7 @@ def update_user(id):
     try:
         from libs.models import User_Model
         request_data = request.get_json()
-        User_Model.update_user(id, request_data['fname'], request_data['lname'], request_data["ph_no"], request_data["email"], request_data["passed"], request_data["re_passwd"])
+        User_Model.update_user(id, request_data['fname'], request_data['lname'], request_data["ph_no"], request_data["email"], request_data["passwd"], request_data["re_passwd"])
         response = Response("User Updated", 201, mimetype='application/json')
         logging.info(" * User Updated")
         return response
