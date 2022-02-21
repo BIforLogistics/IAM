@@ -35,7 +35,7 @@ def get_user_by_id(id):
         return resp
 
 @ROUTE.route('/user', methods=['POST'])
-def add_emp():
+def add_user():
     '''method to add user in our database'''
     try:
         from libs.models import User_Model
