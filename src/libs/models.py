@@ -21,7 +21,7 @@ class User_Model(db.Model):
         '''method to add User to database using parameters'''
         # creating an instance of our User constructor
         new_user = User_Model(fname= _fname, lname =_lname, ph_no =_ph_no, email=_email, passwd= _passwd, re_passwd=_re_passwd)
-        db.session.add(new_user)  # add new emp to database session
+        db.session.add(new_user)  # add new user to database session
         db.session.commit()  # commit changes to session
 
     def get_all_users():
