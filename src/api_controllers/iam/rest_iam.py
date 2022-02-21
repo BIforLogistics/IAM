@@ -23,7 +23,7 @@ def get_user():
         resp.status_code = 500 
         return resp
 
-@ROUTE.route('/emp/<int:id>', methods=['GET'])
+@ROUTE.route('/user/<int:id>', methods=['GET'])
 def get_user_by_id(id):
     try:
         from libs.models import User_Model
@@ -34,7 +34,7 @@ def get_user_by_id(id):
         resp.status_code = 500   
         return resp
 
-@ROUTE.route('/emp', methods=['POST'])
+@ROUTE.route('/user', methods=['POST'])
 def add_emp():
     '''method to add user in our database'''
     try:
@@ -49,7 +49,7 @@ def add_emp():
         resp.status_code = 500   
         return resp
 
-@ROUTE.route('/emp/<int:id>', methods=['PUT'])
+@ROUTE.route('/user/<int:id>', methods=['PUT'])
 def update_user(id):
     '''method to update existing user'''
     try:
@@ -64,7 +64,7 @@ def update_user(id):
         resp.status_code = 500   
         return resp
 
-@ROUTE.route('/emp/<int:id>', methods=['DELETE'])
+@ROUTE.route('/user/<int:id>', methods=['DELETE'])
 def remove_user(id):
     '''method to delete existing user'''
     try:
