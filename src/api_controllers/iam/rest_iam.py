@@ -2,7 +2,7 @@ import logging
 from flask import Blueprint, Flask, Response, jsonify, request
 from libs.models import db
 from configs.flask_config import APP
-
+from libs.iam_process.iam_validations import IAM_Register
 ROUTE = Blueprint('ROUTE',__name__)
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.DEBUG)
@@ -40,11 +40,19 @@ def add_user():
     try:
         from libs.models import User_Model
         request_data = request.get_json()
-        User_Model.add_usr(request_data["fname"], request_data["lname"], request_data["ph_no"], request_data["email"], request_data["passwd"], request_data["re_passwd"])
-        response = Response("User Added", 201, mimetype='application/json')
-        logging.info(" * User Added")
-        return response
-    except:
+        datatype_check = IAM_Register(fname=request_data["fname"], lname=request_data["lname"],
+        ph_no=request_data["ph_no"], email=request_data["email"], passwd=request_data["passwd"],
+        re_passwd=request_data["re_passwd"], role=request_data["role"]).validate_data_type()
+        if datatype_check:
+            User_Model.add_usr(request_data["fname"], request_data["lname"], request_data["ph_no"], request_data["email"], request_data["passwd"], request_data["re_passwd"])
+            response = Response("User Added", 201, mimetype='application/json')
+            logging.info(" * User Added")
+            return response
+        else:
+            response = Response("Validation failed", 400, mimetype='application/json')
+            logging.info(" * validation failed")
+            return response
+    except Exception:
         resp = jsonify({"message": "Internal server error"})
         resp.status_code = 500   
         return resp
@@ -55,6 +63,7 @@ def update_user(id):
     try:
         from libs.models import User_Model
         request_data = request.get_json()
+
         User_Model.update_user(id, request_data['fname'], request_data['lname'], request_data["ph_no"], request_data["email"], request_data["passwd"], request_data["re_passwd"])
         response = Response("User Updated", 201, mimetype='application/json')
         logging.info(" * User Updated")
