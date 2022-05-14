@@ -1,9 +1,13 @@
+import rsa
 import logging
+import traceback
 from flask import Blueprint, Flask, Response, jsonify, request
 from libs.models import db
 from configs.flask_config import APP
 
 ROUTE = Blueprint('ROUTE',__name__)
+
+publicKey, privateKey = rsa.newkeys(512)
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.DEBUG)
 
@@ -19,6 +23,7 @@ def get_user():
         logging.info(" * GET call")
         return jsonify({'Users': User_Model.get_all_users()})
     except:
+        traceback.print_exc()
         resp = jsonify({"message": "Internal server error"})
         resp.status_code = 500 
         return resp
@@ -30,6 +35,7 @@ def get_user_by_id(id):
         return_value = User_Model.get_user_by_id(id)
         return jsonify(return_value)
     except:
+        traceback.print_exc()
         resp = jsonify({"message": "Internal server error"})
         resp.status_code = 500   
         return resp
@@ -40,11 +46,19 @@ def add_user():
     try:
         from libs.models import User_Model
         request_data = request.get_json()
-        User_Model.add_usr(request_data["fname"], request_data["lname"], request_data["ph_no"], request_data["email"], request_data["passwd"], request_data["re_passwd"])
+        logging.info(request_data["passwd"])
+        password = request_data["passwd"]
+        password = str(rsa.encrypt(password.encode(),publicKey))
+        logging.info(password)
+        re_password = request_data["re_passwd"]
+        re_password = rsa.encrypt(password.encode(),publicKey)
+        logging.info(re_password)
+        User_Model.add_usr(request_data["fname"], request_data["lname"], request_data["ph_no"], request_data["email"], password, re_password, request_data["role"])
         response = Response("User Added", 201, mimetype='application/json')
         logging.info(" * User Added")
         return response
     except:
+        traceback.print_exc()
         resp = jsonify({"message": "Internal server error"})
         resp.status_code = 500   
         return resp
@@ -55,11 +69,12 @@ def update_user(id):
     try:
         from libs.models import User_Model
         request_data = request.get_json()
-        User_Model.update_user(id, request_data['fname'], request_data['lname'], request_data["ph_no"], request_data["email"], request_data["passwd"], request_data["re_passwd"])
+        User_Model.update_user(id, request_data['fname'], request_data['lname'], request_data["ph_no"], request_data["email"], request_data["passwd"], request_data["re_passwd"], request_data["role"])
         response = Response("User Updated", 201, mimetype='application/json')
         logging.info(" * User Updated")
         return response
     except:
+        traceback.print_exc()
         resp = jsonify({"message": "Internal server error"})
         resp.status_code = 500   
         return resp
@@ -74,6 +89,7 @@ def remove_user(id):
         logging.info(" * User Deleted")
         return response
     except:
+        traceback.print_exc()
         resp = jsonify({"message": "Internal server error"})
         resp.status_code = 500   
         return resp
