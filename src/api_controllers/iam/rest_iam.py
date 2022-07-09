@@ -63,6 +63,12 @@ def add_user():
     try:
         from libs.models import User_Model
         request_data = request.get_json()
+        user_name = request_data["id"]
+        return_value = User_Model.get_user_by_id(user_name)
+        if return_value:
+            resp = jsonify({"message": "Id already there"})
+            resp.status_code = 400
+            return resp
         logging.info(request_data["passwd"])
         password = request_data["passwd"]
         password = str(rsa.encrypt(password.encode(),publicKey))
