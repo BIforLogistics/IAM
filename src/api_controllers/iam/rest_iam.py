@@ -39,6 +39,23 @@ def get_user_by_id(id):
         resp = jsonify({"message": "Internal server error"})
         resp.status_code = 500   
         return resp
+@ROUTE.route('/user', methods=['POST'])
+def user_login():
+    try:
+        request_data = request.get_json()
+        user_name = request_data["id"]
+        password = request_data["passwd"]
+        from libs.models import User_Model
+        return_value = User_Model.get_user_by_id(user_name)
+        if password == return_value["passwd"]:
+        resp = jsonify({"message": "Successfully logged in"})
+        resp.status_code = 200   
+        return resp
+    except Exception as e:
+        logging.info(f"{e}")
+        resp = jsonify({"message": "Internal server error"})
+        resp.status_code = 500   
+        return resp
 
 @ROUTE.route('/user', methods=['POST'])
 def add_user():
@@ -46,6 +63,12 @@ def add_user():
     try:
         from libs.models import User_Model
         request_data = request.get_json()
+        user_name = request_data["id"]
+        return_value = User_Model.get_user_by_id(user_name)
+        if return_value:
+            resp = jsonify({"message": "Id already there"})
+            resp.status_code = 400
+            return resp
         logging.info(request_data["passwd"])
         password = request_data["passwd"]
         password = str(rsa.encrypt(password.encode(),publicKey))
