@@ -39,6 +39,7 @@ def get_user_by_id(id):
         resp = jsonify({"message": "Internal server error"})
         resp.status_code = 500   
         return resp
+        
 @ROUTE.route('/userlogin', methods=['POST'])
 def user_login():
     try:
