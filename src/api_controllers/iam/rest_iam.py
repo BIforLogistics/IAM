@@ -51,6 +51,10 @@ def user_login():
             resp = jsonify({"message": "Successfully logged in"})
             resp.status_code = 200   
             return resp
+        else:
+            resp = jsonify({"message": "Incorrect password"})
+            resp.status_code = 400   
+            return resp
     
     except Exception as e:
         logging.info(f"{e}")
