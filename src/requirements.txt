@@ -13,5 +13,4 @@ Flask-Responses
 Waitress
 json_logging
 PyMySQL
-rsa
 cryptography

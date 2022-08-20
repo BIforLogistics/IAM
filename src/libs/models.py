@@ -32,7 +32,15 @@ class User_Model(db.Model):
     def get_user_by_id(_id):
         '''method to get user info using the id parameter'''
         return [User_Model.json(User_Model.query.filter_by(id=_id).first())]
-
+    
+    def get_user_by_email(_email):
+        '''method to get user info using the email parameter'''
+        user_model_data = User_Model.query.filter_by(email=_email).first()
+        if user_model_data:
+            return User_Model.json(user_model_data)
+        else:
+            return None
+            
     def update_user(_id, _fname, _lname, _ph_no, _email, _passwd, _re_passwd, _role):
         '''method to update the details of a user using given parameters'''
         user_to_update = User_Model.query.filter_by(id=_id).first()
